@@ -9,7 +9,7 @@ import {
   Shield, Info, Scale, Heart, Zap, ChevronRight,
   Minus, Plus, Globe, Crown, RotateCcw,
   QrCode, CircleNotch, TriangleExclamation,
-  ChevronLeft, Earth, ArchiveOpen, SendHorizontal,
+  ChevronLeft, Earth, Archive, SendHorizontal,
   ShieldHalf
 } from 'lucide-react';
 import Link from 'next/link';
@@ -120,7 +120,7 @@ export default function Home() {
                 <Gem size={14} /> Chọn gói
               </div>
               <div className="pkg-list py-8 text-center rounded-2xl bg-white/5 border border-white/10 border-dashed">
-                <ArchiveOpen size={30} className="mx-auto mb-2 opacity-20" />
+                <Archive size={30} className="mx-auto mb-2 opacity-20" />
                 <span className="text-xs text-[#64748b]">Danh sách trống</span>
               </div>
 
