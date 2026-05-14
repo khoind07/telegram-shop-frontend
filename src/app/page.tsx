@@ -65,20 +65,6 @@ export default function Home() {
             }}
           />
         ))}
-        <style jsx>{`
-          @keyframes rainFall {
-            0% { transform: translateY(-100vh); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
-          }
-          @keyframes rainFallDiagonal {
-            0% { transform: translateY(-100vh) translateX(0) rotate(15deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh) translateX(60px) rotate(15deg); opacity: 0; }
-          }
-        `}</style>
       </div>
 
       {/* Global Background */}
@@ -369,28 +355,6 @@ export default function Home() {
           <Send size={20} className="text-white" />
         </button>
       </div>
-
-      <style jsx global>{`
-        .glass-panel {
-          background: rgba(15, 23, 42, 0.65);
-          backdrop-filter: blur(12px) saturate(180%);
-          border: 1px solid rgba(34, 211, 238, 0.15);
-          box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 32px 0px;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(34, 211, 238, 0.2);
-          border-radius: 10px;
-        }
-        .seller-mono {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-      `}</style>
     </div>
   );
 }
