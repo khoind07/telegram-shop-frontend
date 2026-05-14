@@ -7,9 +7,9 @@ import {
   Gamepad2, Package, Gem, ShoppingCart,
   LogOut, Menu, X, MessageCircle, Send,
   Shield, Info, Scale, Heart, Zap, ChevronRight,
-  Minus, Plus, Globe, Crown, ClockRotateLeft,
+  Minus, Plus, Globe, Crown, RotateCcw,
   QrCode, CircleNotch, TriangleExclamation,
-  ChevronLeft, EarthAmericas, BoxOpen, PaperPlane,
+  ChevronLeft, Earth, ArchiveOpen, SendHorizontal,
   ShieldHalf
 } from 'lucide-react';
 import Link from 'next/link';
@@ -120,7 +120,7 @@ export default function Home() {
                 <Gem size={14} /> Chọn gói
               </div>
               <div className="pkg-list py-8 text-center rounded-2xl bg-white/5 border border-white/10 border-dashed">
-                <BoxOpen size={30} className="mx-auto mb-2 opacity-20" />
+                <ArchiveOpen size={30} className="mx-auto mb-2 opacity-20" />
                 <span className="text-xs text-[#64748b]">Danh sách trống</span>
               </div>
 
@@ -137,7 +137,7 @@ export default function Home() {
 
               <div className="bot-actions grid grid-cols-[48px_48px_1fr] gap-3">
                 <div className="ic-btn h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-white hover:bg-slate-700 transition-all cursor-pointer"><Download size={18} /></div>
-                <div className="ic-btn h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-white hover:bg-slate-700 transition-all cursor-pointer"><PaperPlane size={18} /></div>
+                <div className="ic-btn h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-white hover:bg-slate-700 transition-all cursor-pointer"><SendHorizontal size={18} /></div>
                 <button className="buy-big h-12 rounded-xl bg-slate-900 border border-white/5 flex flex-col items-center justify-center cursor-not-allowed opacity-60">
                    <b className="text-sm font-extrabold text-white">Mua ngay</b>
                    <span className="text-[10px] text-[#94a3b8]">chưa chọn gói</span>
@@ -187,7 +187,7 @@ export default function Home() {
 
              <div className="glass-panel p-5 rounded-[24px]">
                 <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2">
-                  <ClockRotateLeft size={18} className="text-[#64748b]" /> Lịch Sử Nạp Của Bạn
+                  <RotateCcw size={18} className="text-[#64748b]" /> Lịch Sử Nạp Của Bạn
                 </h3>
                 <div className="py-10 text-center text-[#64748b] text-xs">Chưa có giao dịch nạp.</div>
              </div>
