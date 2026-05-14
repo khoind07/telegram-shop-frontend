@@ -8,7 +8,7 @@ import {
   LogOut, Menu, X, MessageCircle, Send,
   Shield, Info, Scale, Heart, Zap, ChevronRight,
   Minus, Plus, Globe, Crown, RotateCcw,
-  QrCode, CircleNotch, TriangleExclamation,
+  QrCode, Loader2, AlertTriangle,
   ChevronLeft, Earth, Archive, SendHorizontal,
   ShieldHalf
 } from 'lucide-react';
