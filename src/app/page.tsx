@@ -1,13 +1,13 @@
 'use client';
 
-import { useInitData, useLaunchParams } from '@telegram-apps/sdk-react';
+import { useLaunchParams } from '@telegram-apps/sdk-react';
 import { ShoppingBag, History, User, ShoppingCart, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/store/CartContext';
 
 export default function Home() {
-  const initData = useInitData();
-  const launchParams = useLaunchParams();
+  const lp = useLaunchParams();
+  const initData = lp?.initData as any;
   const { totalItems } = useCart();
 
   const user = initData?.user;

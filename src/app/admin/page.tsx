@@ -1,12 +1,12 @@
 'use client';
 
-import { useInitData } from '@telegram-apps/sdk-react';
+import { useLaunchParams } from '@telegram-apps/sdk-react';
 import { Package, ClipboardList, Settings, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminPage() {
-  const initData = useInitData();
-  const user = initData?.user;
+  const lp = useLaunchParams();
+  const user = (lp?.initData as any)?.user;
 
   // Note: Actual admin check should be done via API or a more robust state
   // For now, we'll let the API return 403 if the user is not an admin.

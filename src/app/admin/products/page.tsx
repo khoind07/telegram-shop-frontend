@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 import { Product } from '@/store/CartContext';
 import { ChevronLeft, Plus, Trash2, Edit } from 'lucide-react';
 import Link from 'next/link';
+import { useRawInitData } from '@telegram-apps/sdk-react';
 
 export default function AdminProductsPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const rawInitData = useRawInitData();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -72,7 +74,7 @@ export default function AdminProductsPage() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': window.Telegram?.WebApp?.initData || ''
+          'Authorization': rawInitData || ''
         },
         body: JSON.stringify({ name, description, price, image, category, stock })
       });
@@ -96,7 +98,7 @@ export default function AdminProductsPage() {
       const res = await fetch(`${API_URL}/api/products/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': window.Telegram?.WebApp?.initData || ''
+          'Authorization': rawInitData || ''
         }
       });
       if (res.ok) {

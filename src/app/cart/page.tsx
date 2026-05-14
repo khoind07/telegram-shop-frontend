@@ -3,12 +3,14 @@
 import { useCart } from '@/store/CartContext';
 import { ChevronLeft, Trash2, Plus, Minus } from 'lucide-react';
 import Link from 'next/link';
-import { useInitData } from '@telegram-apps/sdk-react';
+import { useLaunchParams, useRawInitData } from '@telegram-apps/sdk-react';
 import { useState } from 'react';
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, totalPrice, clearCart } = useCart();
-  const initData = useInitData();
+  const lp = useLaunchParams();
+  const rawInitData = useRawInitData();
+  const initData = lp?.initData as any;
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleCheckout = async () => {
@@ -32,7 +34,7 @@ export default function CartPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': window.Telegram?.WebApp?.initData || ''
+          'Authorization': rawInitData || ''
         },
         body: JSON.stringify(orderData)
       });

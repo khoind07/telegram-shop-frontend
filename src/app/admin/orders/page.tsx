@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, CheckCircle, XCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { useRawInitData } from '@telegram-apps/sdk-react';
 
 type Order = {
   id: number;
@@ -19,6 +20,7 @@ type Order = {
 
 export default function AdminOrdersPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const rawInitData = useRawInitData();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +28,7 @@ export default function AdminOrdersPage() {
     try {
       const res = await fetch(`${API_URL}/api/orders/all`, {
         headers: {
-          'Authorization': window.Telegram?.WebApp?.initData || ''
+          'Authorization': rawInitData || ''
         }
       });
       if (res.ok) {
@@ -50,7 +52,7 @@ export default function AdminOrdersPage() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': window.Telegram?.WebApp?.initData || ''
+          'Authorization': rawInitData || ''
         },
         body: JSON.stringify({ status })
       });
