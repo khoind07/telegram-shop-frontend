@@ -1,360 +1,358 @@
 'use client';
 
-import { useLaunchParams } from '@telegram-apps/sdk-react';
+import { useLaunchParams, useRawInitData } from '@telegram-apps/sdk-react';
 import { 
   KeyRound, Users, User, BarChart3, Clock, 
   DollarSign, Download, Trophy, Wallet, 
   Gamepad2, Package, Gem, ShoppingCart,
   LogOut, Menu, X, MessageCircle, Send,
-  Shield, Info, Scale, Heart, Zap, ChevronRight
+  Shield, Info, Scale, Heart, Zap, ChevronRight,
+  Minus, Plus, Globe, Crown, ClockRotateLeft,
+  QrCode, CircleNotch, TriangleExclamation,
+  ChevronLeft, EarthAmericas, BoxOpen, PaperPlane,
+  ShieldHalf
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/store/CartContext';
 
+type View = 'shop' | 'acc' | 'dep' | 'top' | 'pro' | 'adm';
+
 export default function Home() {
   const lp = useLaunchParams();
+  const rawInitData = useRawInitData();
   const initData = lp?.initData as any;
-  const { totalItems } = useCart();
   const user = initData?.user;
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const [activeView, setActiveView] = useState<View>('shop');
+  const [qty, setQty] = useState(1);
+  const [lang, setLang] = useState<'vi' | 'en'>('vi');
 
-  // Rain animation effect
-  const [rainDrops, setRainDrops] = useState<any[]>([]);
-  useEffect(() => {
-    const drops = Array.from({ length: 50 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      width: Math.random() > 0.5 ? 1 : 0.5,
-      height: Math.random() * 40 + 15,
-      duration: Math.random() * 2 + 1,
-      delay: Math.random() * 3,
-      diagonal: Math.random() > 0.5
-    }));
-    setRainDrops(drops);
-  }, []);
+  const formatMoney = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  const navItems = [
-    { label: 'MUA KEY', icon: <KeyRound size={20} />, active: true },
-    { label: 'MUA ACC', icon: <Users size={20} /> },
-    { label: 'HỒ SƠ', icon: <User size={20} /> },
-    { label: 'THỐNG KÊ', icon: <BarChart3 size={20} /> },
-    { label: 'LỊCH SỬ', icon: <Clock size={20} /> },
-    { label: 'GIAO DỊCH', icon: <DollarSign size={20} /> },
-    { label: 'LINK TẢI', icon: <Download size={20} /> },
-    { label: 'NẠP TIỀN', icon: <Wallet size={20} /> },
-    { label: 'TOP NẠP', icon: <Trophy size={20} /> },
+  const navItems: { label: string, icon: any, view: View, i18n: string }[] = [
+    { label: 'Mua Key', icon: <KeyRound size={22} />, view: 'shop', i18n: 'tab_key' },
+    { label: 'Mua Acc', icon: <Users size={22} />, view: 'acc', i18n: 'tab_acc' },
+    { label: 'Nạp Tiền', icon: <Wallet size={22} />, view: 'dep', i18n: 'tab_deposit' },
+    { label: 'Top Nạp', icon: <Trophy size={22} />, view: 'top', i18n: 'tab_top' },
+    { label: 'Cá Nhân', icon: <User size={22} />, view: 'pro', i18n: 'tab_profile' },
   ];
 
   return (
-    <div className="seller-mono min-h-screen relative bg-black text-white selection:bg-cyan-500/30">
-      {/* Rain Effect */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {rainDrops.map(drop => (
-          <div 
-            key={drop.id}
-            className="absolute top-0"
-            style={{
-              left: `${drop.left}%`,
-              width: `${drop.width}px`,
-              height: `${drop.height}px`,
-              background: 'linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12))',
-              opacity: drop.width === 1 ? 0.2 : 0.1,
-              animation: `${drop.diagonal ? 'rainFallDiagonal' : 'rainFall'} ${drop.duration}s linear ${drop.delay}s infinite`,
-              boxShadow: 'rgba(255, 255, 255, 0.3) 0px 0px 1.5px'
-            }}
-          />
-        ))}
-      </div>
+    <div className="min-h-screen relative text-[#f8fafc] overflow-x-hidden pb-[100px]">
+      {/* Background Blobs */}
+      <div className="blob b1"></div>
+      <div className="blob b2"></div>
+      <div className="blob b3"></div>
 
-      {/* Global Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black"></div>
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.15) 1px, transparent 0px)', backgroundSize: '4px 4px' }}></div>
-      </div>
-
-      <div className="flex justify-center relative z-10">
-        <div className="w-full max-w-[1800px] p-4 sm:p-6 md:p-8 lg:p-10">
-          
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6 sm:mb-8 gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/70 border border-cyan-500/30 flex items-center justify-center">
-                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-300" />
-                </div>
-                <div className="min-w-0">
-                  <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-100 via-cyan-200 to-slate-400 bg-clip-text text-transparent truncate">
-                    {user?.username || 'Guest'}
-                  </h1>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-cyan-500/5 border border-cyan-500/10 shadow-[0_0_5px_rgba(99,102,241,0.15)]">
-                <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400/60" />
-                <span className="text-gray-200 font-bold text-xs sm:text-base">0 ₫</span>
-              </div>
-              <button 
-                onClick={() => setIsMenuOpen(true)}
-                className="sm:hidden w-10 h-10 flex items-center justify-center rounded-xl border transition-all duration-300 active:scale-95 bg-slate-900/40 border-gray-800/40 text-gray-400"
-              >
-                <Menu size={24} />
-              </button>
-            </div>
+      {/* Header */}
+      <header className="hdr px-4 py-2 flex items-center justify-between sticky top-0 z-[90]">
+        <div className="hdr-left flex items-center gap-2 flex-1">
+          <div className="avt w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg">
+            {user?.photoUrl ? (
+              <img src={user.photoUrl} alt="avt" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-white font-bold">{user?.firstName?.charAt(0) || 'U'}</span>
+            )}
           </div>
-
-          {/* Desktop Nav */}
-          <div className="hidden sm:flex sm:flex-wrap gap-2 sm:gap-3 md:gap-4 mb-[60px] sm:mb-[80px] lg:mb-[100px] justify-center">
-            {navItems.map((item, idx) => (
-              <button 
-                key={idx}
-                className={`flex items-center gap-3 px-6 py-3 font-bold rounded-2xl border transition-all text-base ${
-                  item.active 
-                    ? 'bg-cyan-600/20 border-cyan-500/30 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)]' 
-                    : 'bg-slate-900/40 border-gray-800/40 text-gray-400 hover:border-gray-700 hover:text-gray-200'
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            ))}
+          <div className="hdr-info">
+            <h3 className="text-sm font-extrabold truncate max-w-[100px]">{user?.firstName || 'Guest'}</h3>
+            <p className="text-[10px] text-[#94a3b8] font-mono">ID: {user?.id || '5190559062'}</p>
           </div>
-
-          {/* Mobile Side Menu */}
-          {isMenuOpen && (
-            <div className="fixed inset-0 z-[100] sm:hidden flex justify-end">
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}></div>
-              <div className="relative w-[280px] bg-slate-950 border-l border-gray-800 shadow-2xl p-6 h-full overflow-y-auto animate-in slide-in-from-right duration-300">
-                <div className="flex items-center justify-between mb-8">
-                  <span className="text-lg font-bold text-cyan-400 uppercase tracking-wider">Menu</span>
-                  <button onClick={() => setIsMenuOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900/40 border border-gray-800/40 text-gray-400">
-                    <X size={24} />
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  {navItems.map((item, idx) => (
-                    <button 
-                      key={idx}
-                      className={`flex items-center gap-3 px-6 py-3 font-bold rounded-2xl border transition-all text-base w-full ${
-                        item.active 
-                          ? 'bg-cyan-600/20 border-cyan-500/30 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)]' 
-                          : 'bg-slate-900/40 border-gray-800/40 text-gray-400'
-                      }`}
-                    >
-                      {item.icon}
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                  <button className="flex items-center justify-center gap-3 w-full px-6 py-3 font-bold rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 mt-6">
-                    <LogOut size={20} />
-                    <span>Đăng xuất</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Main Content Area */}
-          <div className="flex justify-center pb-24 sm:pb-0">
-            <div className="w-full max-w-[1600px]">
-              <div className="mb-4 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl border border-white/10 bg-slate-800/75 flex items-center justify-center shadow-inner shadow-cyan-500/10">
-                    <KeyRound className="w-5 h-5 text-slate-100" />
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="text-white text-xl font-black tracking-tight leading-tight">Mua Key Game/Tool</h2>
-                    <p className="text-slate-300 text-sm leading-tight mt-1">Hệ thống tự động cấp Key</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-                {/* Sidebar Info */}
-                <div className="hidden lg:block lg:col-span-3 space-y-4">
-                  <div className="rounded-3xl p-5 glass-panel">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
-                        <Zap className="w-6 h-6 text-cyan-400" />
-                      </div>
-                      <div>
-                        <h1 className="text-xl font-bold text-white tracking-tight">Tạo key</h1>
-                        <p className="text-cyan-400/70 text-xs font-medium uppercase tracking-wider">Mua key sản phẩm</p>
-                      </div>
-                    </div>
-                    <div className="space-y-3 pt-4 border-t border-white/5">
-                      <div className="bg-slate-900/40 rounded-2xl p-3 border border-white/5">
-                        <p className="text-slate-400 text-xs font-medium mb-1">Seller</p>
-                        <p className="text-white text-sm font-semibold truncate">{user?.firstName || 'Guest'}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-3xl p-5 glass-panel space-y-4">
-                    <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest">Thống kê</h3>
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="flex items-center justify-between p-3 bg-slate-900/40 rounded-2xl border border-white/5">
-                        <div className="flex items-center gap-2">
-                          <Package className="w-4 h-4 text-slate-400" />
-                          <span className="text-slate-300 text-sm">Tổng Sản phẩm</span>
-                        </div>
-                        <span className="text-white font-bold">17</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-slate-900/40 rounded-2xl border border-white/5">
-                        <div className="flex items-center gap-2">
-                          <Zap className="w-4 h-4 text-emerald-400" />
-                          <span className="text-slate-300 text-sm">Có sẵn</span>
-                        </div>
-                        <span className="text-emerald-400 font-bold">16</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Main Shop Selection */}
-                <div className="col-span-1 lg:col-span-9 space-y-4 sm:space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="rounded-3xl p-4 sm:p-6 glass-panel">
-                      <div className="space-y-6">
-                        <div className="rounded-2xl border border-white/10 bg-slate-900/45 p-4">
-                          <p className="text-xs font-black text-indigo-300 uppercase tracking-[0.18em] mb-3 flex items-center gap-2">
-                            <Package className="w-3.5 h-3.5" /> CHỌN ỨNG DỤNG
-                          </p>
-                          <Link href="/products" className="w-full flex items-center justify-between gap-3 p-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-                            <div className="flex items-center gap-3">
-                              <div className="w-14 h-14 rounded-2xl bg-slate-900/70 border border-white/10 flex items-center justify-center">
-                                <Gamepad2 className="w-6 h-6 text-indigo-300" />
-                              </div>
-                              <div className="min-w-0 text-left">
-                                <p className="text-white font-bold truncate">Nhấn chọn game</p>
-                                <p className="text-xs text-slate-400 mt-0.5">Chưa chọn</p>
-                              </div>
-                            </div>
-                            <span className="text-slate-400 text-xl leading-none">›</span>
-                          </Link>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          <h4 className="text-xs font-black text-cyan-500/70 uppercase tracking-[0.2em] pl-1 flex items-center gap-2">
-                            <Gem className="w-3.5 h-3.5" /> CHỌN GÓI
-                          </h4>
-                          <div className="p-6 text-center rounded-2xl border border-white/10 bg-white/5 text-slate-400 text-sm">
-                            Vui lòng chọn ứng dụng trước.
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Buy Action Box */}
-                      <div className="mt-8 space-y-4">
-                        <div className="p-3 rounded-2xl border bg-slate-900/60 border-white/10">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-400/25 flex items-center justify-center">
-                                <Package className="w-4 h-4 text-indigo-300" />
-                              </div>
-                              <span className="text-slate-200 font-black tracking-wide uppercase">SỐ LƯỢNG</span>
-                            </div>
-                            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/70 px-1.5 py-1">
-                              <button className="w-10 h-10 rounded-xl bg-slate-700/80 text-white flex items-center justify-center opacity-40">−</button>
-                              <div className="w-14 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center text-white font-black text-2xl">1</div>
-                              <button className="w-10 h-10 rounded-xl bg-slate-600/80 text-white flex items-center justify-center opacity-40">+</button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-2.5 grid-cols-[52px_52px_1fr]">
-                          <button className="h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-slate-200 hover:bg-slate-700">
-                            <Download size={18} />
-                          </button>
-                          <button className="h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-slate-200 hover:bg-slate-700">
-                            <Send size={18} />
-                          </button>
-                          <button disabled className="h-12 rounded-xl border px-3 border-white/10 bg-slate-900/80 text-slate-400 font-black cursor-not-allowed">
-                            MUA NGAY
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Recent Transactions */}
-                    <div className="rounded-3xl p-4 sm:p-6 glass-panel">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Shield className="w-5 h-5 text-cyan-400" />
-                        <h3 className="text-lg font-bold text-white">Giao dịch gần đây</h3>
-                      </div>
-                      <div className="space-y-3 overflow-y-auto max-h-[400px] custom-scrollbar pr-1">
-                        <div className="rounded-2xl border p-4 border-emerald-500/30 bg-emerald-500/5 flex justify-between items-center">
-                          <p className="text-white font-semibold text-sm">User123 nạp 500.000 ₫</p>
-                          <span className="text-xs text-slate-400">01:28</span>
-                        </div>
-                        <div className="rounded-2xl border p-4 border-indigo-500/30 bg-indigo-500/5 flex justify-between items-center">
-                          <p className="text-white font-semibold text-sm">Anh Bảo mua Migul Lite 1 Ngày</p>
-                          <span className="text-xs text-slate-400">13:50</span>
-                        </div>
-                        {/* More mock entries if needed */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Footer */}
-          <footer className="mt-16 sm:mt-24 pb-12">
-            <div className="p-6 sm:p-10 rounded-[28px] border border-white/10 bg-slate-900/30 backdrop-blur-md">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 flex items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/10">
-                      <Shield className="w-6 h-6 text-cyan-300" />
-                    </div>
-                    <h3 className="text-xl font-bold">Reseller Dashboard</h3>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">Nền tảng quản lý key sản phẩm chuyên nghiệp.</p>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-200 flex items-center gap-2"><Info size={16} /> Liên kết</h4>
-                  <ul className="space-y-2 text-sm text-gray-400">
-                    <li><Link href="#" className="hover:text-cyan-300 transition-colors">Về chúng tôi</Link></li>
-                    <li><Link href="#" className="hover:text-cyan-300 transition-colors">Hỗ trợ</Link></li>
-                  </ul>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-200 flex items-center gap-2"><Scale size={16} /> Pháp lý</h4>
-                  <ul className="space-y-2 text-sm text-gray-400">
-                    <li><Link href="#" className="hover:text-cyan-300 transition-colors">Chính sách bảo mật</Link></li>
-                    <li><Link href="#" className="hover:text-cyan-300 transition-colors">Điều khoản sử dụng</Link></li>
-                  </ul>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-200 flex items-center gap-2"><MessageCircle size={16} /> Liên hệ</h4>
-                  <div className="flex gap-3">
-                    <Link href="https://t.me/canhioscrack" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-cyan-500/20 transition-all">
-                      <Send size={18} className="text-cyan-300" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400">
-                <p>© 2026 Reseller System. All rights reserved.</p>
-                <p className="flex items-center gap-1">Created with <Heart size={12} className="text-rose-500 fill-rose-500/30" /> by Admin</p>
-              </div>
-            </div>
-          </footer>
         </div>
-      </div>
 
-      {/* Floating Action Buttons */}
-      <div className="fixed bottom-24 sm:bottom-6 right-6 z-[95] flex flex-col items-end gap-3">
-        <button className="w-12 h-12 rounded-2xl bg-yellow-500 flex items-center justify-center border border-yellow-400/50 shadow-lg shadow-yellow-500/20 animate-bounce">
-          <span className="text-xl">🎲</span>
-        </button>
-        <button className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center border border-cyan-400/40 shadow-lg shadow-cyan-500/20">
-          <Send size={20} className="text-white" />
-        </button>
-      </div>
+        <div className="hdr-center flex items-center gap-1">
+          <button 
+            onClick={() => setLang('vi')}
+            className={`lang-btn flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border ${lang === 'vi' ? 'border-[#6366f1] bg-[#6366f1]/15 text-white' : 'border-white/10 text-[#94a3b8]'}`}
+          >
+            <span className="text-xs">🇻🇳</span> VI
+          </button>
+          <span className="text-white/10 text-xs">|</span>
+          <button 
+            onClick={() => setLang('en')}
+            className={`lang-btn flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border ${lang === 'en' ? 'border-[#6366f1] bg-[#6366f1]/15 text-white' : 'border-white/10 text-[#94a3b8]'}`}
+          >
+            <span className="text-xs">🇬🇧</span> EN
+          </button>
+        </div>
+
+        <div className="hdr-right text-right pl-2">
+          <b className="text-sm text-[#6366f1] block">0đ</b>
+          <span className="text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-md text-[#cbd5e1] font-bold uppercase">Customer</span>
+        </div>
+      </header>
+
+      {/* Main Views */}
+      <main className="animate-in fade-in duration-500">
+        
+        {/* SHOP VIEW */}
+        {activeView === 'shop' && (
+          <div className="view-shop px-4 py-4 space-y-4">
+            <div className="shop-hdr flex items-center gap-3 px-2">
+              <div className="icon-bg w-12 h-12 rounded-2xl bg-[#6366f1]/10 flex items-center justify-center text-[#6366f1] border border-[#6366f1]/20">
+                <KeyRound size={24} />
+              </div>
+              <div>
+                <h2 className="text-lg font-extrabold text-white">Mua Key Game/Tool</h2>
+                <p className="text-xs text-[#94a3b8]">Hệ thống tự động cấp Key</p>
+              </div>
+            </div>
+
+            <div className="glass-panel p-5 rounded-[24px] space-y-5">
+              <div className="step-lbl flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-wider">
+                <Package size={14} /> Chọn ứng dụng
+              </div>
+              <Link href="/products" className="sel-box flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                <div className="sel-left flex items-center gap-3">
+                  <div className="sel-icon w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-[#6366f1]">
+                    <Gamepad2 size={24} />
+                  </div>
+                  <div className="sel-txt">
+                    <b className="text-white block text-sm">Nhấn chọn game</b>
+                    <span className="text-[10px] text-[#94a3b8]">Chưa chọn</span>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="text-[#64748b]" />
+              </Link>
+
+              <div className="step-lbl flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-wider mt-6">
+                <Gem size={14} /> Chọn gói
+              </div>
+              <div className="pkg-list py-8 text-center rounded-2xl bg-white/5 border border-white/10 border-dashed">
+                <BoxOpen size={30} className="mx-auto mb-2 opacity-20" />
+                <span className="text-xs text-[#64748b]">Danh sách trống</span>
+              </div>
+
+              <div className="qty-wrap flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="step-lbl flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-wider">
+                   <Package size={14} /> Số lượng
+                </div>
+                <div className="qty-ctrl flex items-center gap-2 bg-slate-800/50 p-1 rounded-xl border border-white/5">
+                  <button onClick={() => setQty(Math.max(1, qty-1))} className="w-9 h-9 rounded-lg bg-slate-700/50 text-white flex items-center justify-center"><Minus size={16} /></button>
+                  <input type="number" readOnly value={qty} className="w-12 bg-transparent text-center font-extrabold text-lg p-0 border-none shadow-none" />
+                  <button onClick={() => setQty(qty+1)} className="w-9 h-9 rounded-lg bg-slate-700/50 text-white flex items-center justify-center"><Plus size={16} /></button>
+                </div>
+              </div>
+
+              <div className="bot-actions grid grid-cols-[48px_48px_1fr] gap-3">
+                <div className="ic-btn h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-white hover:bg-slate-700 transition-all cursor-pointer"><Download size={18} /></div>
+                <div className="ic-btn h-12 rounded-xl border border-white/10 bg-slate-800/70 flex items-center justify-center text-white hover:bg-slate-700 transition-all cursor-pointer"><PaperPlane size={18} /></div>
+                <button className="buy-big h-12 rounded-xl bg-slate-900 border border-white/5 flex flex-col items-center justify-center cursor-not-allowed opacity-60">
+                   <b className="text-sm font-extrabold text-white">Mua ngay</b>
+                   <span className="text-[10px] text-[#94a3b8]">chưa chọn gói</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="glass-panel p-5 rounded-[24px]">
+              <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2">
+                <Globe size={18} className="text-[#6366f1]" /> Giao Dịch Gần Đây
+              </h3>
+              <div className="space-y-2">
+                {[
+                  { name: 'Shop Clone Free Fire', action: 'nạp', amt: '500.000đ', time: '09:11', color: '#10b981' },
+                  { name: 'Ngọc Đông', action: 'mua', amt: '31 Ngày', time: '08:43', color: '#6366f1' },
+                ].map((item, i) => (
+                  <div key={i} className="flex justify-between items-center p-2.5 bg-white/5 rounded-xl border-l-[3px]" style={{ borderColor: item.color }}>
+                    <div className="text-xs text-[#cbd5e1] flex items-center gap-1.5">
+                       {item.action === 'nạp' ? <Wallet size={12} style={{ color: item.color }} /> : <ShoppingCart size={12} style={{ color: item.color }} />}
+                       <b className="text-white">{item.name}</b> {item.action} <b style={{ color: item.color }}>{item.amt}</b>
+                    </div>
+                    <span className="text-[10px] text-[#64748b]">{item.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DEPOSIT VIEW */}
+        {activeView === 'dep' && (
+          <div className="view-dep px-4 py-6 space-y-4">
+             <div className="glass-panel p-8 rounded-[32px] border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-transparent relative overflow-hidden">
+                <div className="absolute top-[-20px] right-[-20px] opacity-10 rotate-12"><Crown size={120} /></div>
+                <h3 className="text-lg font-black text-[#fde047] mb-2 flex items-center gap-2">
+                  <Crown size={20} /> Nạp Tiền Tự Động 24/7
+                </h3>
+                <p className="text-xs text-[#cbd5e1] mb-6">Giao dịch được xử lý tự động trong vòng 5 giây.</p>
+                <div className="inp-grp relative mb-4">
+                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500" size={18} />
+                  <input type="number" placeholder="Nhập số tiền (Tối thiểu 2.000đ)" className="w-full pl-12 bg-black/30 border-white/10 rounded-2xl py-4 font-bold" />
+                </div>
+                <button className="btn btn-gold w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-600 to-yellow-400 text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20 active:scale-95">
+                  <QrCode size={20} /> TẠO MÃ QR NẠP TIỀN
+                </button>
+             </div>
+
+             <div className="glass-panel p-5 rounded-[24px]">
+                <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2">
+                  <ClockRotateLeft size={18} className="text-[#64748b]" /> Lịch Sử Nạp Của Bạn
+                </h3>
+                <div className="py-10 text-center text-[#64748b] text-xs">Chưa có giao dịch nạp.</div>
+             </div>
+          </div>
+        )}
+
+        {/* TOP VIEW */}
+        {activeView === 'top' && (
+          <div className="view-top px-4 py-4 space-y-4">
+             <div className="shop-hdr flex items-center gap-3 px-2">
+                <div className="icon-bg w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center text-yellow-500 border border-yellow-500/20">
+                  <Trophy size={24} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-white">Bảng Xếp Hạng</h2>
+                  <p className="text-xs text-[#94a3b8]">Top người dùng nạp nhiều nhất</p>
+                </div>
+              </div>
+
+              <div className="glass-panel p-3 rounded-[24px]">
+                 <div className="top-tabs flex gap-1 p-1 bg-black/30 rounded-2xl mb-4">
+                   {['Tháng này', 'Tuần này', 'Tất cả'].map((t, i) => (
+                     <button key={i} className={`flex-1 py-2 rounded-xl text-[11px] font-extrabold transition-all ${i === 0 ? 'bg-[#6366f1]/20 text-[#6366f1] border border-[#6366f1]/30' : 'text-[#64748b]'}`}>{t}</button>
+                   ))}
+                 </div>
+                 
+                 <div className="space-y-2">
+                   {[
+                     { name: 'Vanthienios', amount: '4.810.000đ', rank: '🥇', id: '5820303294', color: 'text-yellow-400' },
+                     { name: 'Hai Dang', amount: '4.335.000đ', rank: '🥈', id: '6167618125', color: 'text-slate-300' },
+                     { name: 'ThienAn.', amount: '3.790.000đ', rank: '🥉', id: '8322398598', color: 'text-orange-400' },
+                   ].map((item, i) => (
+                    <div key={i} className={`flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 ${i < 3 ? 'border-l-4' : ''}`} style={{ borderLeftColor: i === 0 ? '#eab308' : i === 1 ? '#cbd5e1' : i === 2 ? '#f97316' : '' }}>
+                      <div className="rank-badge w-6 text-center text-lg">{item.rank}</div>
+                      <div className="top-avt w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-white border border-white/5">{item.name.charAt(0)}</div>
+                      <div className="flex-1 min-w-0">
+                         <span className="block text-xs font-black truncate">{item.name}</span>
+                         <span className="text-[9px] text-[#94a3b8]">ID: {item.id}</span>
+                      </div>
+                      <div className={`font-black text-xs ${item.color}`}>{item.amount}</div>
+                    </div>
+                   ))}
+                 </div>
+              </div>
+          </div>
+        )}
+
+        {/* PROFILE VIEW */}
+        {activeView === 'pro' && (
+          <div className="view-pro px-4 py-4 space-y-4">
+             <div className="glass-panel p-5 rounded-[24px]">
+                <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2"><User size={18} className="text-[#6366f1]" /> Tổng Quan Tài Khoản</h3>
+                <div className="grid grid-cols-3 gap-2">
+                   <div className="stat-glass flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/5 text-center">
+                     <KeyRound size={16} className="text-[#6366f1] mb-1" />
+                     <b className="text-sm block">0</b>
+                     <span className="text-[8px] text-[#94a3b8] uppercase font-bold">SP Đã Mua</span>
+                   </div>
+                   <div className="stat-glass flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/5 text-center">
+                     <ShoppingCart size={16} className="text-yellow-500 mb-1" />
+                     <b className="text-sm block">0đ</b>
+                     <span className="text-[8px] text-[#94a3b8] uppercase font-bold">Tổng Chi</span>
+                   </div>
+                   <div className="stat-glass flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 border border-white/5 text-center">
+                     <Wallet size={16} className="text-[#10b981] mb-1" />
+                     <b className="text-sm block">0đ</b>
+                     <span className="text-[8px] text-[#94a3b8] uppercase font-bold">Tổng Nạp</span>
+                   </div>
+                </div>
+             </div>
+
+             <div className="glass-panel p-5 rounded-[24px] space-y-3">
+                <h3 className="text-sm font-extrabold text-white flex items-center gap-2"><Users size={18} /> Hệ Thống Giới Thiệu (Ref)</h3>
+                <p className="text-[11px] text-[#94a3b8]">Nhận ngay <b className="text-[#10b981]">0%</b> hoa hồng khi người được bạn mời nạp tiền thành công.</p>
+                <div className="inp-grp no-icon">
+                  <input readOnly value="https://t.me/bot?start=5190559062" className="py-2.5 rounded-xl bg-black/40 text-[11px]" />
+                </div>
+                <button className="w-full py-2.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs">Copy Link Giới Thiệu</button>
+                <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/10 mt-2">
+                   <span className="text-xs text-[#cbd5e1] font-bold">Hoa hồng đã nhận:</span>
+                   <b className="text-yellow-500">0đ</b>
+                </div>
+             </div>
+
+             <div className="glass-panel p-5 rounded-[24px]">
+                <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2"><Package size={18} /> Kho Của Bạn</h3>
+                <div className="py-12 text-center text-[#64748b] text-xs">Chưa có SP nào.</div>
+             </div>
+          </div>
+        )}
+
+        {/* ADMIN VIEW */}
+        {activeView === 'adm' && (
+          <div className="view-adm px-4 py-4 space-y-4">
+             <div className="glass-panel p-5 rounded-[24px]">
+                <h3 className="text-sm font-extrabold text-white mb-4 flex items-center gap-2"><BarChart3 size={18} /> Thống Kê Chung</h3>
+                <div className="grid grid-cols-3 gap-2">
+                   <div className="p-3 bg-white/5 rounded-xl text-center border border-white/5">
+                      <p className="text-[10px] text-[#94a3b8] mb-1">User</p>
+                      <b className="text-lg">0</b>
+                   </div>
+                   <div className="p-3 bg-white/5 rounded-xl text-center border border-white/5">
+                      <p className="text-[10px] text-[#94a3b8] mb-1">Nạp</p>
+                      <b className="text-lg text-[#6366f1]">0</b>
+                   </div>
+                   <div className="p-3 bg-white/5 rounded-xl text-center border border-white/5">
+                      <p className="text-[10px] text-[#94a3b8] mb-1">Spam</p>
+                      <b className="text-lg text-red-500">0</b>
+                   </div>
+                </div>
+             </div>
+             
+             <div className="glass-panel p-4 rounded-[24px] flex items-center justify-between">
+                <Link href="/admin" className="w-full flex items-center justify-between text-[#6366f1] font-bold text-sm">
+                   <span>Mở trang quản trị nâng cao</span>
+                   <ChevronRight size={18} />
+                </Link>
+             </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* Navigation Bar */}
+      <nav className="tbar fixed bottom-0 left-0 right-0 z-[99] flex items-center justify-around px-2">
+        {navItems.map((item, idx) => (
+          <div 
+            key={idx} 
+            onClick={() => setActiveView(item.view)}
+            className={`titem flex flex-col items-center justify-center flex-1 cursor-pointer transition-all ${activeView === item.view ? 'act text-[#6366f1]' : 'text-[#64748b]'}`}
+          >
+            <div className={`transition-transform duration-300 ${activeView === item.view ? 'scale-110 -translate-y-1 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]' : ''}`}>
+              {item.icon}
+            </div>
+            <span className="text-[9px] font-bold uppercase tracking-tighter mt-1">{item.label}</span>
+          </div>
+        ))}
+        {initData?.user?.id && (
+           <div 
+            onClick={() => setActiveView('adm')}
+            className={`titem flex flex-col items-center justify-center flex-1 cursor-pointer transition-all ${activeView === 'adm' ? 'act text-indigo-400' : 'text-[#64748b]'}`}
+          >
+            <ShieldHalf size={22} className={`${activeView === 'adm' ? 'scale-110 -translate-y-1' : ''}`} />
+            <span className="text-[9px] font-bold uppercase tracking-tighter mt-1">Admin</span>
+          </div>
+        )}
+      </nav>
+
+      {/* Global CSS from source */}
+      <style jsx global>{`
+        .hdr { background: rgba(20, 24, 36, 0.5); backdrop-filter: blur(25px) saturate(150%); border-bottom: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        .hdr-right b { color: #6366f1; }
+        
+        .tbar { background: rgba(20, 24, 36, 0.6); backdrop-filter: blur(25px) saturate(150%); border-top: 1px solid rgba(255,255,255,0.08); border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -10px 40px rgba(0,0,0,0.4); }
+        
+        .btn-gold { background: linear-gradient(135deg, #eab308, #b45309); box-shadow: 0 5px 20px rgba(234, 179, 8, 0.3); }
+        
+        .qty-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        
+        input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); outline: none; }
+        input:focus { border-color: #6366f1; }
+
+        .view { display: none; }
+        .view.act { display: block; }
+      `}</style>
     </div>
   );
 }
